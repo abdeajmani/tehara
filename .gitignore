@@ -26,3 +26,10 @@ hs_err_pid*
 .settings/
 .project
 .classpath
+/bin/
+/.gradle/
+/build/
+gradle/
+gradlew
+gradlew.bat
+
