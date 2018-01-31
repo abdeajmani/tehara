@@ -14,8 +14,9 @@ eclipse {
 	}
 	wtp {
 		facet {
+		  facet name: 'java', version: '1.8'		  
 		  facet name: 'jst.web', version: '3.1'
-		  facet name: 'java', version: '1.8'
+		  facet name: "jst.jsf", version: "2.2"
 		}
 	}
 	jdt {
@@ -39,27 +40,35 @@ test{
   	testLogging.showStandardStreams = true	
 }
 
-//war {
-	//for wildfly deployment exclude tomcat-embed 
-	//rootSpec.exclude("**/tomcat-embed*.jar")
-//}
-
 bootRun {
     args += ["--server.port=9080"]
 }
 
+//joinFaces dep
+def prodPofiles = 'prod'
+def devProfiles = 'dev'
+
+if(project.hasProperty('prod')){
+	apply from: rootProject.file('profile/prod.gradle');
+	println 'Using profile prod'
+} else if (project.hasProperty('dev')){
+	apply from: rootProject.file('profile/dev.gradle');
+	println 'Using profile dev'
+} else {
+	apply from: rootProject.file('profile/dev.gradle');
+	println 'Using default profile dev'
+}
+
 
 dependencies {
-    implementation "com.opencsv:opencsv:${opencsvVersion}"
+    //implementation "com.opencsv:opencsv:${opencsvVersion}"
+    implementation "org.apache.commons:commons-csv:${commonscsvVersion}"
      
-    implementation "org.projectlombok:lombok:${lombokVersion}"
-	
-	//implementation "org.joinfaces:jsf-spring-boot-starter:${joinfacesVersion}"
-	implementation "org.joinfaces:jsf-undertow-spring-boot-starter:${joinfacesVersion}"
-	
-	implementation "org.primefaces.themes:all-themes:${primefacesThemesVersion}"
-	
+    implementation "org.projectlombok:lombok:${lombokVersion}"	
 
+	implementation "org.primefaces.themes:all-themes:${primefacesThemesVersion}"	
+
+	implementation "org.springframework.boot:spring-boot-starter-data-jpa"
 	implementation "org.springframework.boot:spring-boot-starter-security"
 	
 	testCompile "org.springframework.boot:spring-boot-starter-test"
