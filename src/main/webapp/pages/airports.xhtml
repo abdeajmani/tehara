@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f = "http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:head>
+		<title>Airports and Airlines</title>
+	</h:head>
+	<h:body>
+		<f:metadata>
+		    <f:viewParam name="countryName" value="#{airportView.countryName}" />
+		</f:metadata>
+		<!-- <p><strong>#{airportView.countryName}</strong></p> -->
+		<p><strong>
+			<h:link value="Aitports location: #{airportView.countryName}" outcome="maps">
+				<f:param name="countryName" value="#{airportView.countryName}" />
+			</h:link>
+		</strong></p>
+		
+		<p:dataTable var="airport" value="#{airportView.airports}">
+		
+				<p:column headerText="Airport Name">
+					<h:link value="#{airport.name}" outcome="routes">
+						<!-- <f:param name="countryName" value="#{airportView.countryName}" />-->
+						<f:param name="airportId" value="#{airport.airportId}" />
+					</h:link>
+				</p:column>
+				
+				<p:column headerText="city">
+					<h:outputText value="#{airport.city}" />
+				</p:column>
+		
+				<p:column headerText="icao">
+					<h:outputText value="#{airport.icao}" />
+				</p:column>	
+				
+		</p:dataTable>
+		
+		<p:dataTable var="airline" value="#{airportView.airlines}">
+		
+				<p:column headerText="Airline Name">
+					<h:outputText value="#{airline.name}" />						
+				</p:column>
+				
+				<p:column headerText="alias">
+					<h:outputText value="#{airline.alias}" />
+				</p:column>
+		
+				<p:column headerText="iata">
+					<h:outputText value="#{airline.iata}" />
+				</p:column>	
+				
+				<p:column headerText="icao">
+					<h:outputText value="#{airline.icao}" />
+				</p:column>	
+				
+				<p:column headerText="callsign">
+					<h:outputText value="#{airline.callsign}" />
+				</p:column>		
+				
+				
+		</p:dataTable>
+		
+		
+	</h:body>
+	
+	
+	
+</html>

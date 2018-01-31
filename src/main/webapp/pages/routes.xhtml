@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<link rel="stylesheet"
+		href="https://openlayers.org/en/v4.6.4/css/ol.css" type="text/css" />
+    <link rel="stylesheet"
+		href="/css/maps.css" type="text/css" />
+	<script src="https://openlayers.org/en/v4.6.4/build/ol.js" type="text/javascript"></script>
+	<!--
+	<script src="https://openlayers.org/en/v4.6.4/build/ol-debug.js" type="text/javascript"></script>
+	-->
+	<script src="https://api.mapbox.com/mapbox.js/plugins/arc.js/v0.1.0/arc.js" type="text/javascript"></script>
+	<title>Routes</title>
+</h:head>
+<h:body>
+	<f:metadata>
+		<f:viewParam name="airportId" value="#{routeView.airportId}" />
+	</f:metadata>
+	<h2>Routes</h2>
+	<div id="map" class="map">
+	</div>
+	
+	
+	<p:dataTable var="from" value="#{routeView.from}">
+	
+		<p:column headerText="id">
+			<h:outputText value="#{from.routeId}" />
+		</p:column>
+		
+		<p:column headerText="airline">
+			<h:outputText value="#{from.airline.name}" />						
+		</p:column>
+		
+		<p:column headerText="destination">
+			<h:outputText value="#{from.dstAirport.name}" />						
+		</p:column>
+				
+	</p:dataTable>
+	
+	
+	<p:dataTable var="to" value="#{routeView.to}">
+	
+		<p:column headerText="id">
+			<h:outputText value="#{to.routeId}" />
+		</p:column>
+		
+		<p:column headerText="airline">
+			<h:outputText value="#{to.airline.name}" />						
+		</p:column>
+		<p:column headerText="source">
+			<h:outputText value="#{to.srcAirport.name}" />						
+		</p:column>
+				
+	</p:dataTable>
+	
+	
+	
+	
+	<h:outputScript>
+	
+	var vectorLayerfeatures = [];
+	var airportFeature;
+	var arcGenerator;
+	var arcLine;
+	
+	
+	<p:repeat var="to" value="#{routeView.to}" >
+      		arcGenerator = new arc.GreatCircle(
+                  {x: #{routeView.airport.longitude}, y: #{routeView.airport.latitude}},
+                  {x: #{to.srcAirport.longitude}, y:  #{to.srcAirport.latitude}});
+            
+      		arcLine = arcGenerator.Arc(100, {offset: 10});
+      		var line = new ol.geom.LineString(arcLine.geometries[0].coords);
+            line.transform(ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857'));
+      		airportFeature = new ol.Feature({
+	   	 			geometry: line,
+	   	 			finished: true,
+	   	 			style : new ol.style.Style({
+				       stroke : new ol.style.Stroke({color : 'red'})
+				   })
+	   	 		});		   	 	
+	   	 	vectorLayerfeatures.push(airportFeature);
+   	  </p:repeat>
+	
+	var vectorLayer = new ol.layer.Vector ({
+      	source: new ol.source.Vector ({
+      		features: vectorLayerfeatures      				
+      	})
+      });
+      
+	var map = new ol.Map({
+	   	controls: ol.control.defaults().extend([
+	    	new ol.control.FullScreen(),
+	    	new ol.control.ScaleLine(),
+	    	new ol.control.Zoom()
+	    ]),
+        target: 'map',
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.OSM()
+          }),
+          vectorLayer         
+        ],
+        //overlays: [ overlay ],
+        view: new ol.View({
+          //center: ol.proj.fromLonLat([4.46027994156,51.1893997192]),
+          center: ol.proj.fromLonLat([#{routeView.airport.longitude},#{routeView.airport.latitude}]),
+          zoom: 10
+          })
+      });
+      
+      
+	
+    </h:outputScript>
+</h:body>
+</html>

@@ -1,0 +1,4 @@
+dependencies {
+	implementation "org.joinfaces:jsf-undertow-spring-boot-starter:${joinfacesVersion}"
+}
+	

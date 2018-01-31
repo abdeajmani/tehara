@@ -1,0 +1,72 @@
+plugins {
+    id "org.springframework.boot" version "1.5.7.RELEASE"
+}
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'org.springframework.boot'
+
+eclipse {
+	project {
+		natures 'org.eclipse.wst.common.project.facet.core.nature'
+	}
+	wtp {
+		facet {
+		  facet name: 'jst.web', version: '3.1'
+		  facet name: 'java', version: '1.8'
+		}
+	}
+	jdt {
+		sourceCompatibility = 1.8
+		targetCompatibility = 1.8
+	}
+}
+
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    jcenter()
+    maven{
+    	//primeface themes
+    	url "http://repository.primefaces.org"
+    }
+}
+
+test{
+	// show standard out and standard error of the test JVM(s) on the console
+  	testLogging.showStandardStreams = true	
+}
+
+//war {
+	//for wildfly deployment exclude tomcat-embed 
+	//rootSpec.exclude("**/tomcat-embed*.jar")
+//}
+
+bootRun {
+    args += ["--server.port=9080"]
+}
+
+
+dependencies {
+    implementation "com.opencsv:opencsv:${opencsvVersion}"
+     
+    implementation "org.projectlombok:lombok:${lombokVersion}"
+	
+	//implementation "org.joinfaces:jsf-spring-boot-starter:${joinfacesVersion}"
+	implementation "org.joinfaces:jsf-undertow-spring-boot-starter:${joinfacesVersion}"
+	
+	implementation "org.primefaces.themes:all-themes:${primefacesThemesVersion}"
+	
+
+	implementation "org.springframework.boot:spring-boot-starter-security"
+	
+	testCompile "org.springframework.boot:spring-boot-starter-test"
+	
+	implementation "mysql:mysql-connector-java:${mysqlVersion}"
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.4.1'
+}
