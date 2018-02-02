@@ -1,4 +1,9 @@
 dependencies {
 	implementation "org.joinfaces:jsf-undertow-spring-boot-starter:${joinfacesVersion}"
 }
+
+war {
+	archiveName = 'ROOT.war'
+	destinationDir = file('/wildfly/standalone/deployments/')
+}
 	
